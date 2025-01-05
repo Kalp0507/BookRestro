@@ -1,6 +1,6 @@
 "use client";
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 type Booking = {
     _id: string | null | undefined;
@@ -14,22 +14,23 @@ type Booking = {
 };
 
 export default function Bookings() {
-    const [userName, setUserName] = useState('');
+    const [userName, setUserName] = useState("");
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [searched, setSearched] = useState(false); // Track if search has been initiated
     const api = process.env.NEXT_PUBLIC_BACKEND_API;
     const router = useRouter();
-    
 
     const findBookings = async () => {
         if (!userName) {
-            setError('Please enter your name.');
+            setError("Please enter your name.");
             return;
         }
 
         setLoading(true);
         setError(null);
+        setSearched(true); // Mark that search has started
 
         try {
             const response = await fetch(`${api}/bookings?name=${userName}`);
@@ -38,13 +39,13 @@ export default function Bookings() {
                 const uniqueBookings = Array.from(new Set(data.map((booking: Booking) => booking._id)))
                     .map((id) => data.find((booking: Booking) => booking._id === id));
 
-                console.log(data,uniqueBookings)
+                console.log(data, uniqueBookings);
                 setBookings(uniqueBookings);
             } else {
-                setError('Failed to fetch bookings.');
+                setError("Failed to fetch bookings.");
             }
         } catch (err) {
-            setError('Failed to fetch bookings.');
+            setError("Failed to fetch bookings.");
             console.error(err);
         } finally {
             setLoading(false);
@@ -80,7 +81,7 @@ export default function Bookings() {
                         Find
                     </button>
                     <button
-                        onClick={()=>router.push('/')}
+                        onClick={() => router.push("/")}
                         className="whitespace-nowrap bg-blue-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-600 transition-all"
                     >
                         Book more
@@ -94,15 +95,27 @@ export default function Bookings() {
                         {bookings.map((booking) => (
                             <li key={booking._id} className="p-6 bg-white border border-gray-200 rounded-lg shadow-md">
                                 <h2 className="text-xl font-semibold text-gray-800 mb-2">{booking.restaurantName}</h2>
-                                <p className="text-sm text-gray-600"><strong>Date:</strong> {booking.date}</p>
-                                <p className="text-sm text-gray-600"><strong>Time:</strong> {booking.time}</p>
-                                <p className="text-sm text-gray-600"><strong>Guests:</strong> {booking.guests}</p>
-                                <p className="text-sm text-gray-600"><strong>Contact:</strong> {booking.contact}</p>
+                                <p className="text-sm text-gray-600">
+                                    <strong>Date:</strong> {booking.date}
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    <strong>Time:</strong> {booking.time}
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    <strong>Guests:</strong> {booking.guests}
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    <strong>Contact:</strong> {booking.contact}
+                                </p>
                             </li>
                         ))}
                     </ul>
                 ) : (
-                    userName && <p className="text-center text-gray-600 mt-6">No bookings found for <strong>{userName}</strong>.</p>
+                    searched && (
+                        <p className="text-center text-gray-600 mt-6">
+                            No bookings found for <strong>{userName}</strong>.
+                        </p>
+                    )
                 )}
             </div>
         </div>
