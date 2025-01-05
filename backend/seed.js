@@ -1,13 +1,20 @@
-const mongoose = require('mongoose');
+require("dotenv").config();
+const { default: mongoose } = require("mongoose");
 const Restaurant = require('./models/Restaurant');
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/BookRestro', {
+const mongoURI = process.env.MONGO_URI;
+console.log(mongoURI)
+mongoose.connect(`${mongoURI}`, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
 })
-    .then(() => console.log("MongoDB connected"))
-    .catch(err => console.error(err));
+.then(() => {
+    console.log('MongoDB connected');
+})
+.catch((err) => {
+    console.error('MongoDB connection error:', err);
+});
 
 // Mock restaurant data
 const mockData = [
@@ -222,21 +229,16 @@ const mockData = [
     }
 ];
 
-// Function to insert mock data into MongoDB
 const seedData = async () => {
     try {
-        await Restaurant.deleteMany({}); // Clear existing data
-        await Restaurant.insertMany(mockData); // Insert mock data
-        console.log('Data seeded successfully');
-        mongoose.connection.close();
+        await Restaurant.deleteMany({}); 
+        await Restaurant.insertMany(mockData); 
+        console.log('Mock data seeded successfully');
     } catch (err) {
         console.error('Error seeding data:', err);
+    } finally {
         mongoose.connection.close();
     }
 };
-
-
-
-
 
 seedData();
