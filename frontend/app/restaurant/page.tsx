@@ -19,19 +19,22 @@ export default function Restaurants() {
     const formData = dataParam ? JSON.parse(decodeURIComponent(dataParam)) : null;
     const date = formData ? formData.date : null; 
     const time = formData ? formData.time : null; 
+    const api = process.env.NEXT_PUBLIC_BACKEND_API
 
     useEffect(() => {
         if (date) {
             // Fetch data based on 'date' from the query params
-            fetch(`http://localhost:5000/api/restaurants?date=${date}`)
+            console.log(api)
+            fetch(`${api}/restaurants?date=${date}`)
                 .then((response) => response.json())
                 .then((data) => {
+                    console.log(data)
                     const restaurants = data;  // Adjust this according to your API
                     setData(restaurants);
                 })
                 .catch((error) => console.error("Error fetching data:", error));
         }
-    }, [date]);
+    }, [date, api]);
 
     useEffect(() => {
         if (data?.length > 0 && time) {

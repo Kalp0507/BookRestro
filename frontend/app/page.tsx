@@ -13,14 +13,9 @@ export default function Home() {
     contact: string;
   };
 
-  // State to manage the user's name
-
   const handleReservation = async (formData: FormData) => {
     try {
-      // Serialize the formData object into a query parameter
       const serializedData = encodeURIComponent(JSON.stringify(formData));
-
-      // Push the serialized data to the router query
       router.push(`/restaurant?data=${serializedData}`);
     } catch (error) {
       console.error(error);
@@ -33,8 +28,6 @@ export default function Home() {
 
       {/* Booking Form Component */}
       <BookingForm onSubmit={handleReservation} />
-
-
 
       {/* Button to navigate to the user's bookings */}
       <div className="mt-4 flex w-full">

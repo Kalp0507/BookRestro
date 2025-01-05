@@ -26,7 +26,7 @@ export default function RestaurantDetail() {
     const date = formData ? formData.date : null; 
     const selectedTime = formData ? formData.time : null;
     const serializedFormData = encodeURIComponent(JSON.stringify(formData));
-
+    const api = process.env.NEXT_PUBLIC_BACKEND_API
 
     function convertTo24Hour(time: string): string {
         const [hourMin, modifier] = time.split(' ');
@@ -52,11 +52,11 @@ export default function RestaurantDetail() {
     useEffect(() => {
         if (!restaurantId || !date) return;  // Guard clause for missing params
 
-        fetch(`http://localhost:5000/api/restaurant/${restaurantId}?date=${date}`)
+        fetch(`${api}/restaurant/${restaurantId}?date=${date}`)
             .then((response) => response.json())
             .then((data) => setRestaurant(data))
             .catch((error) => console.error("Error fetching restaurant details:", error));
-    }, [restaurantId, date]);
+    }, [restaurantId, date, api]);
 
     if (!restaurant) {
         return <div>Loading...</div>;

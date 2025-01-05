@@ -11,12 +11,10 @@ export default function BookingTicket() {
     const dataParam = searchParams.get('formData');
     const formData = dataParam ? JSON.parse(decodeURIComponent(dataParam)) : null;
     const date = formData ? formData.date : null;
-
-
     const [isBookingConfirmed, setIsBookingConfirmed] = useState(false);
     const [error, setError] = useState<string | null>(null);
-
     const router = useRouter(); // Initialize useRouter
+    const api = process.env.NEXT_PUBLIC_BACKEND_API
 
     const handleBooking = async () => {
         if (!restaurantName || !tableId || !date || !time) {
@@ -37,7 +35,7 @@ export default function BookingTicket() {
 
         try {
             // Make a POST request to save the booking
-            const response = await fetch('http://localhost:5000/api/bookings', {
+            const response = await fetch(`${api}/bookings`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
