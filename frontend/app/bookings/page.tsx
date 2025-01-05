@@ -35,9 +35,10 @@ export default function Bookings() {
             const response = await fetch(`${api}/bookings?name=${userName}`);
             if (response.ok) {
                 const data = await response.json();
-                const uniqueBookings = Array.from(new Set(data.map((booking: Booking) => booking.id)))
-                    .map((id) => data.find((booking: Booking) => booking.id === id));
+                const uniqueBookings = Array.from(new Set(data.map((booking: Booking) => booking._id)))
+                    .map((id) => data.find((booking: Booking) => booking._id === id));
 
+                console.log(data,uniqueBookings)
                 setBookings(uniqueBookings);
             } else {
                 setError('Failed to fetch bookings.');
