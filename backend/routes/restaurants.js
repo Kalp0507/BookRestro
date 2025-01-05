@@ -7,6 +7,9 @@ const router = express.Router();
 // Get available restaurants for a specific date
 router.get('/api/restaurants', async (req, res) => {
     const { date } = req.query;
+    if (!date || isNaN(Date.parse(date))) {
+        return res.status(400).json({ message: 'Invalid or missing date parameter' });
+    }    
 
     try {
         const restaurants = await Restaurant.find();
@@ -17,7 +20,7 @@ router.get('/api/restaurants', async (req, res) => {
 
         res.json(availableRestaurants);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching restaurants', error });
+        res.status(500).json({ message: 'Error fetching restaurants', error: error.message|| error});
     }
 });
 
@@ -31,7 +34,7 @@ router.get('/api/restaurant/:id', async (req, res) => {
         }
         res.json(restaurant);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching restaurant', error });
+        res.status(500).json({ message: 'Error fetching restaurant', error: error.message|| error });
     }
 });
 

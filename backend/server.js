@@ -1,6 +1,6 @@
 require("dotenv").config();
 const express = require("express");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const mongoose = require("mongoose");
 const cors = require("cors");
 const bookingRoutes = require("./routes/bookings");
 const restaurantRoutes = require("./routes/restaurants");
@@ -13,9 +13,18 @@ app.use(cors({ origin: "*" }));
 
 // MongoDB Connection
 const mongoURI = process.env.MONGO_URI;
-const client = new MongoClient(mongoURI);
 
-client.connect().then(console.log('connected'));
+mongoose
+    .connect(mongoURI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        serverSelectionTimeoutMS: 30000, // Increase timeout to 30 seconds
+    })
+    .then(() => console.log("Connected to MongoDB"))
+    .catch((err) => {
+        console.error("MongoDB Connection Error:", err);
+        process.exit(1); // Exit the server if connection fails
+    });
 
 // Start server
 const PORT = process.env.PORT || 5000;
